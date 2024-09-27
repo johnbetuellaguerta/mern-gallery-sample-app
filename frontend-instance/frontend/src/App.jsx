@@ -13,7 +13,7 @@ function App() {
 <section className="title-banner py-4 bg-success text-white" id="title-banner">
       <div className="container">
         <div className="row">
-          <h4>Todo Image Gallery</h4>
+          <h4>Todo Image Gallery by Master Tabujek</h4>
         </div>
       </div>
     </section>
