@@ -1,4 +1,4 @@
-<h3>Set up the AWS Infrastructure</h3>
+# Set up the AWS Infrastructure
 
 1. Log in to your AWS Management Console.
 2. Navigate to the VPC dashboard and click ```Create VPC```.<br />
@@ -225,3 +225,5 @@ sudo systemctl enable nginx
 ```
 > [!IMPORTANT]
 > Change the value for your ```<YOUR_BUCKET_NAME>```.
+
+<br />***NEXT STEP:***&nbsp;&nbsp;[CONFIGURE THE EC2 INSTANCES](CONFIG_INSTANCES.md)
