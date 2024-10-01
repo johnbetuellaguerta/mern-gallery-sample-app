@@ -4,7 +4,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-          VITE_BACKEND_ENDPOINT: <PUBLIC NLB DNS NAME>:5000
+          VITE_BACKEND_ENDPOINT: <PUBLIC_NLB_DNS_NAME>:5000
           VITE_SERVER_HOSTNAME: ${HOSTNAME}
     ports:
       - 3000:3000
