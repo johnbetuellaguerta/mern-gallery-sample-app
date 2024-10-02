@@ -1,6 +1,6 @@
 # Configure the EC2 Instances
 
-> [!NOTE]
+> [!IMPORTANT]
 > Since ```backend-instance``` and ```EC2 Mongodb``` are **PRIVATE**, we cannot directly connect to them via SSH using our laptop.<br />
 > To access these instances, we will be using ```frontend-instance``` as **JUMP HOST**.<br />
 > To do this, we first need to connect to ```frontend-instance```, then from this *Public instance*, we can now connect to ```backend-instance``` and ```EC2 Mongodb``` via SSH.
@@ -180,7 +180,11 @@ vim docker-compose.yml
 ```
 
 > [!IMPORTANT]
-> Search for ```VITE_BACKEND_ENDPOINT: <PUBLIC_NLB_DNS_NAME>:5000```<br />
+> Search for this line:
+> ```
+> VITE_BACKEND_ENDPOINT: <PUBLIC_NLB_DNS_NAME>:5000
+> ```
+> Replace ```<PUBLIC_NLB_DNS_NAME>``` with its corresponding value.<br />
 > To copy your ```Public NLB DNS name```, go back to the AWS console, and search for ```Load balancers```.<br />
 > Select ```Public-NLB```, then copy the ```DNS name```.
 
@@ -229,7 +233,7 @@ vim mern.conf
 ```
 
 > [!IMPORTANT]
-> Search for the following:
+> Search for:
 > ```
 > server <FRONTEND-INSTANCE-1_PRIVATE_IP>; # frontend-instance-1
 > server <FRONTEND-INSTANCE-2_PRIVATE_IP>; # frontend-instance-2
@@ -249,25 +253,39 @@ sudo vim /etc/nginx/nginx.conf
 ```
 
 > [!IMPORTANT]
-> Search for the following:
+> Search for:
 > ```
 >     server {
 >        listen       80;
 >        listen       [::]:80;
 >        server_name  _;
-#        root         /usr/share/nginx/html;
-
-        # Load configuration files for the default server block.
-#        include /etc/nginx/default.d/*.conf;
-
-#        error_page 404 /404.html;
-#        location = /404.html {
-#        }
-
-#        error_page 500 502 503 504 /50x.html;
-#        location = /50x.html {
-#        }
-#    }
-
+>        root         /usr/share/nginx/html;
+>
+> 	# Load configuration files for the default server block.
+>        include /etc/nginx/default.d/*.conf;
+>
+>        error_page 404 /404.html;
+>        location = /404.html {
+>        }
+>
+>        error_page 500 502 503 504 /50x.html;
+>        location = /50x.html {
+>        }
+>    }
 > ```
-> Replace ```<FRONTEND-INSTANCE-1_PRIVATE_IP>```, ```<FRONTEND-INSTANCE-2_PRIVATE_IP>```, ```<PUBLIC_NLB_DNS_NAME>``` with their corresponding values.
+> Comment out these lines of code. Use ```#``` at the beginning of each lines.
+
+8. Restart NGINX service by running:
+```
+sudo systemctl restart nginx
+```
+
+9. Verify if NGINX service is running, run this:
+```
+sudo systemctl status nginx
+```
+
+---
+### Our application is now deployed in AWS, and ready for testing.<br />
+- [Accessing the App from Browser](README.md#accessing-the-app-from-browser)
+- [Accessing Mongo-Express from Browser](README.md#accessing-mongo-express-from-browser)
