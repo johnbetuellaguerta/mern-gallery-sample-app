@@ -11,8 +11,7 @@ jobs:
         steps:
         - uses: actions/checkout@v4
           with:
-            repository: jbetueldev/terraforms/mern-app
-            path: './mern-app'
+            repository: jbetueldev/terraforms
         - uses: hashicorp/setup-terraform@v3
 
         - name: Check files
@@ -29,6 +28,7 @@ jobs:
         
         - name: Terraform apply 
           run: | 
+            cd mern-app
             ls
             terraform init
             terraform apply -target=aws_instance.nat_instance -auto-approve
