@@ -11,7 +11,7 @@ jobs:
         steps:
         - uses: actions/checkout@v4
           with:
-            repository: jbetueldev/terraforms
+            repository: jbetueldev/terraforms/mern-app
             path: './mern-app'
         - uses: hashicorp/setup-terraform@v3
 
