@@ -182,7 +182,7 @@ vim docker-compose.yml
 > [!IMPORTANT]
 > Search for this line:
 > ```
-> VITE_BACKEND_ENDPOINT: <PUBLIC_NLB_DNS_NAME>:5000
+> VITE_BACKEND_ENDPOINT: http://<PUBLIC_NLB_DNS_NAME>:5000
 > ```
 > Replace ```<PUBLIC_NLB_DNS_NAME>``` with its corresponding value.<br />
 > To copy your ```Public NLB DNS name```, go back to the AWS console, and search for ```Load balancers```.<br />
