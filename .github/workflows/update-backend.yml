@@ -24,6 +24,11 @@ jobs:
             aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws-region: us-east-1
         
+        - name: Set up AWS key pair
+          run: |
+            cd mern-app
+            echo "$AWS_KEY_PAIR" > MERN.pem && chmod 400 MERN.pem
+
         - name: Terraform apply 
           run: | 
             cd mern-app
