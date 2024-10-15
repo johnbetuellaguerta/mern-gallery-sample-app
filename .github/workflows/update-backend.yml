@@ -6,7 +6,7 @@ on:
             - 'backend-instance/**'
 
 jobs:
-    nat-instance:
+    Spin-up-NAT-instance:
         runs-on: ubuntu-latest
         steps:
         - name: Checkout repo
@@ -17,3 +17,21 @@ jobs:
         
         - name: Check files
           run: ls
+        
+        - name: Terraform apply
+          run: |
+            cd mern-app
+            terraform apply -target=aws_instance.nat_instance -auto-approve
+            terraform apply -target=aws_route.outbound_nat_route -auto-approve
+    
+    Update-the-code-in-backend-instance:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4
+          with:
+            path: './backend-instance'
+        
+        - name: Check files
+          run: ls
+          
