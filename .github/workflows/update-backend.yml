@@ -23,12 +23,6 @@ jobs:
             aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
             aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws-region: us-east-1
-        
-        # - name: Set up AWS key pair and Github SSH key
-        #   run: |
-        #     cd mern-app
-        #     echo "$AWS_KEY_PAIR" > MERN.pem && chmod 400 MERN.pem
-        #     echo "$SSH_KEY_GITHUB" > id_rsa && chmod 400 id_rsa
 
         - name: Terraform apply 
           run: | 
@@ -49,3 +43,19 @@ jobs:
         
         - name: Check files
           run: ls
+    
+    Connect-to-backend-instance-1:
+        runs-on: ubuntu-latest
+        needs: Update-the-code-in-backend-instance
+        steps:
+        - name: SSH connect
+          env:
+              aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
+              nat-instance-public-ip: ${{vars.NAT_IP}}
+          run: |
+            echo "$aws-key-pair" > key_pair && chmod 400 key_pair
+            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@${nat-instance-public-ip} '
+      
+                echo "This is a test file." > test.txt
+    
+                '
