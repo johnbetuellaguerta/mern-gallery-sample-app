@@ -1,0 +1,19 @@
+name: Update backend
+
+on:
+    push:
+        paths:
+            - 'backend-instance/**'
+
+jobs:
+    nat-instance:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4
+          with:
+            repository: jbetueldev/terraforms
+            path: './mern-app'
+        
+        - name: Check files
+          run: ls
