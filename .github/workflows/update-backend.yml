@@ -1,9 +1,9 @@
 name: Update backend
 
-on:
-    push:
-        paths:
-            - 'backend-instance/**'
+on: push
+    # push:
+    #     paths:
+    #         - 'backend-instance/**'
 
 jobs:
     Spin-up-NAT-instance:
@@ -24,9 +24,7 @@ jobs:
             aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           run: |
             cd mern-app
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            mkdir ~/.aws
             echo "$aws_access_key_id" >> ~/.aws/credentials
             echo "$aws_secret_access_key" >> ~/.aws/credentials 
             terraform init
