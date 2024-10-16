@@ -37,16 +37,10 @@ jobs:
             echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             pwd
             scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/mern-app/private_key ec2-user@$NAT_IP:~/
-            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP '
-      
-                echo "This is a test file in NAT-instance." > test.txt
-                ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
-      
-                    echo "This is a test file in backend-instance." > test.txt
-        
-                    '
-    
-                '
+            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP -t "
+            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} -t '
+            echo "This is a test file in backend-instance." > test.txt
+            '"
 
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
