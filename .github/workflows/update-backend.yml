@@ -25,6 +25,8 @@ jobs:
             aws-region: us-east-1
 
         - name: Terraform apply 
+          env:
+              aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
           run: | 
             cd mern-app
             ls
@@ -34,14 +36,13 @@ jobs:
             terraform output -raw nat_instance_ip > nat.txt
             export NAT_IP=$(xargs <nat.txt)
             echo $NAT_IP
-        
-        - name: SSH connect
-          env:
-              aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
-              nat-ip: $NAT_IP
-          run: |
-            echo $NAT_IP
+            echo "$aws-key-pair" > key_pair && chmod 400 key_pair
+            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$NAT_IP '
+      
+                echo "This is a test file." > test.txt
     
+                '
+
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
         needs: Spin-up-NAT-instance
