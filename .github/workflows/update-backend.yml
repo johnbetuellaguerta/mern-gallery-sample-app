@@ -1,4 +1,4 @@
-name: Update in backend-instance
+name: Update in backend
 
 on:
     push:
@@ -6,13 +6,16 @@ on:
             - 'backend-instance/**'
 
 jobs:
-    Spin-up-NAT-instance:
+    Backend-update:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v4
+        - name: Checkout terraform repo
+          uses: actions/checkout@v4
           with:
             repository: jbetueldev/terraforms
-        - uses: hashicorp/setup-terraform@v3
+
+        - name: Setup terraform
+          uses: hashicorp/setup-terraform@v3
         
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -21,7 +24,7 @@ jobs:
             aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws-region: us-east-1
 
-        - name: Terraform apply / SSH connect
+        - name: Spin up NAT instance / Connect to backend-instance-1
           env:
               PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
               HOSTNAME: ${{secrets.BACKEND_1_IP}}
@@ -57,7 +60,7 @@ jobs:
 
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
-        needs: Spin-up-NAT-instance
+        needs: Backend-update
         steps:
         - name: Checkout repo
           uses: actions/checkout@v4
