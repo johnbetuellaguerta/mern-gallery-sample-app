@@ -66,4 +66,4 @@ jobs:
             path: './backend-instance'
         
         - name: Check files
-          run: ls
+          run: ls backend-instance/
