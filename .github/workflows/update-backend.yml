@@ -40,7 +40,7 @@ jobs:
               aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
           run: |
             echo "$aws-key-pair" > key_pair && chmod 400 key_pair
-            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$NAT_IP '
+            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@${NAT_IP} '
       
                 echo "This is a test file." > test.txt
     
