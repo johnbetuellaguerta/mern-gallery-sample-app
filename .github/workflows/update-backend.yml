@@ -33,6 +33,7 @@ jobs:
             terraform apply -target=aws_route.outbound_nat_route -auto-approve
             terraform output -raw nat_instance_ip > nat.txt
             cat nat.txt
+            export NAT_IP=$(xargs <nat.txt)
         
         # - name: Export NAT instance IP
         #   run: |
