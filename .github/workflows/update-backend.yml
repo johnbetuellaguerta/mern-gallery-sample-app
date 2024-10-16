@@ -34,11 +34,17 @@ jobs:
             terraform output -raw nat_instance_ip > nat.txt
             export NAT_IP=$(xargs <nat.txt)
             echo $NAT_IP
-            
-        # - name: Export NAT instance IP
-        #   run: |
-        #     export NAT_IP=$(xargs <nat.txt)
-        #     echo $NAT_IP
+        
+        - name: SSH connect
+          env:
+              aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
+          run: |
+            echo "$aws-key-pair" > key_pair && chmod 400 key_pair
+            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$NAT_IP '
+      
+                echo "This is a test file." > test.txt
+    
+                '
     
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
@@ -52,18 +58,17 @@ jobs:
         - name: Check files
           run: ls
     
-    Connect-to-backend-instance-1:
-        runs-on: ubuntu-latest
-        needs: Update-the-code-in-backend-instance
-        steps:
-        - name: SSH connect
-          env:
-              aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
-              nat-instance-public-ip: ${{vars.NAT_IP}}
-          run: |
-            echo "$aws-key-pair" > key_pair && chmod 400 key_pair
-            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@${nat-instance-public-ip} '
+    # Connect-to-backend-instance-1:
+    #     runs-on: ubuntu-latest
+    #     needs: Update-the-code-in-backend-instance
+    #     steps:
+    #     - name: SSH connect
+    #       env:
+    #           aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
+    #       run: |
+    #         echo "$aws-key-pair" > key_pair && chmod 400 key_pair
+    #         ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$NAT_IP '
       
-                echo "This is a test file." > test.txt
+    #             echo "This is a test file." > test.txt
     
-                '
+    #             '
