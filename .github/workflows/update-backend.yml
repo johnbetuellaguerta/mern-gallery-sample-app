@@ -24,7 +24,7 @@ jobs:
             aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
             aws-region: us-east-1
 
-        - name: Terraform apply 
+        - name: Terraform apply / SSH connect
           env:
               aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
           run: | 
@@ -36,8 +36,8 @@ jobs:
             terraform output -raw nat_instance_ip > nat.txt
             export NAT_IP=$(xargs <nat.txt)
             echo $NAT_IP
-            echo "$aws-key-pair" > key_pair && chmod 400 key_pair
-            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$NAT_IP '
+            echo "$aws-key-pair" > private_key && chmod 400 private_key
+            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP '
       
                 echo "This is a test file." > test.txt
     
