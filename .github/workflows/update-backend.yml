@@ -38,9 +38,10 @@ jobs:
         - name: SSH connect
           env:
               aws-key-pair: ${{secrets.AWS_KEY_PAIR}}
+              nat-ip: $NAT_IP
           run: |
             echo "$aws-key-pair" > key_pair && chmod 400 key_pair
-            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@${NAT_IP} '
+            ssh -o StrictHostKeyChecking=no -i key_pair ec2-user@$nat-ip '
       
                 echo "This is a test file." > test.txt
     
