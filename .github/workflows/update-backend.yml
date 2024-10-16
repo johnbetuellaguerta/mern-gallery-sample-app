@@ -31,12 +31,12 @@ jobs:
             terraform init
             terraform apply -target=aws_instance.nat_instance -auto-approve
             terraform apply -target=aws_route.outbound_nat_route -auto-approve
-            terraform output -raw nat_instance_ip
-            export NAT_IP=$(!!)
+            terraform output -raw nat_instance_ip > nat.txt
+            cat nat.txt
         
-        - name: Export NAT instance IP
-          run: |
-            echo $NAT_IP
+        # - name: Export NAT instance IP
+        #   run: |
+        #     echo $NAT_IP
     
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
