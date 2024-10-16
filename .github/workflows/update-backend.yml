@@ -24,7 +24,7 @@ jobs:
         - name: Terraform apply / SSH connect
           env:
               PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
-              BACKEND_1_IP: ${{secrets.BACKEND_1_IP}}
+              HOSTNAME: ${{secrets.BACKEND_1_IP}}
           run: | 
             cd mern-app
             ls
@@ -35,12 +35,11 @@ jobs:
             export NAT_IP=$(xargs <nat.txt)
             echo $NAT_IP
             echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
-            pwd
             scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/mern-app/private_key ec2-user@$NAT_IP:~/
             ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP '
       
                 echo "This is a test file in NAT-instance." > test.txt
-                ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${BACKEND_1_IP} '
+                ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
       
                     echo "This is a test file in backend-instance." > test.txt
         
