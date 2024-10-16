@@ -35,6 +35,7 @@ jobs:
             export NAT_IP=$(xargs <nat.txt)
             echo $NAT_IP
             echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
+            scp -o StrictHostKeyChecking=no -i $HOME/private_key $HOME/private_key ec2-user@18.210.12.57:~/
             ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP '
       
                 echo "This is a test file in NAT-instance." > test.txt
