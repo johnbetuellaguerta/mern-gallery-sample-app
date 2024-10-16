@@ -34,6 +34,7 @@ jobs:
             terraform output -raw nat_instance_ip > nat.txt
             cat nat.txt
             export NAT_IP=$(xargs <nat.txt)
+            echo $NAT_IP
         
         # - name: Export NAT instance IP
         #   run: |
