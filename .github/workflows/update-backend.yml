@@ -35,7 +35,7 @@ jobs:
         
         - name: Export NAT instance IP
           run: |
-            export NAT_IP=$(terraform output -raw nat_instance_ip)
+            export NAT_IP=$(!!)
             echo $NAT_IP
     
     Update-the-code-in-backend-instance:
