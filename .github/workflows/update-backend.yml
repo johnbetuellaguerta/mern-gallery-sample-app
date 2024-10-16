@@ -37,8 +37,8 @@ jobs:
             echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             pwd
             scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/mern-app/private_key ec2-user@$NAT_IP:~/
-            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@$NAT_IP -t "
-            ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} -t '
+            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
+            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
             if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
                 git clone git@github.com:jbetueldev/mern-gallery-sample-app.git
             else
@@ -53,10 +53,7 @@ jobs:
             docker buildx build -t mern-backend:latest .
             docker run --name backend -p 5000:5000 -d --restart always mern-backend:latest
             docker logs backend
-            exit
-            '
-            exit
-            "
+            '"
 
     Update-the-code-in-backend-instance:
         runs-on: ubuntu-latest
