@@ -1,4 +1,4 @@
-name: Update backend
+name: Update in backend-instance
 
 on: push
     # push:
