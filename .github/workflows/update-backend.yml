@@ -51,9 +51,11 @@ jobs:
         steps:
         - name: Connect to NAT-instance > backend-instance-1
           env:
+              PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
               HOSTNAME: ${{secrets.BACKEND_1_IP}}
               NAT_IP: ${{needs.Initialization.outputs.output1}}
           run: |
+            echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
             if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
@@ -78,9 +80,11 @@ jobs:
         steps:
         - name: Connect to NAT-instance > backend-instance-2
           env:
+              PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
               HOSTNAME: ${{secrets.BACKEND_2_IP}}
               NAT_IP: ${{needs.Initialization.outputs.output1}}
           run: |
+            echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
             if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
@@ -105,9 +109,11 @@ jobs:
         steps:
         - name: Connect to NAT instance > backend-instance-3
           env:
+              PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
               HOSTNAME: ${{secrets.BACKEND_3_IP}}
               NAT_IP: ${{needs.Initialization.outputs.output1}}
           run: |
+            echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
             if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
