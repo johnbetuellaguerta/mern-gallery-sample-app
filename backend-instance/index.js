@@ -37,6 +37,16 @@ app.get('/api/todos', async (req, res) => {
   }
 });
 
+// TEST
+app.get('/test', async (req, res) => {
+  try {
+    res.json('Test');
+  } catch (error) {
+    res.status(500).json({ message: 'Error test', error });
+  }
+});
+
+
 // Route to add a new todo
 app.post('/api/todos', async (req, res) => {
   try {
