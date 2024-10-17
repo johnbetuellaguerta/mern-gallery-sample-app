@@ -9,7 +9,7 @@
 
 1. Since it is a ***Private instance***, we will first access ```frontend-instance-1```.<br />
 Before accessing ```frontend-instance-1```, we need to copy the following from your local ```WSL machine``` to the remote ```frontend-instance-1```:
-  - GitHub keys *(e.g.* ```id_ed25519``` *and* ```id_ed25519.pub```*)*
+  - GitHub SSH key *(e.g.* ```id_ed25519```*)*
   - AWS Key pair *(e.g.* ```MERN.pem```*)* 
 > Identify first the ```Public IPv4 address``` of ```frontend-instance-1```.<br />
 > To do this, go back to EC2 Management Console, then click ```Instances```. Select ```frontend-instance-1```, and navigate to the ```Details``` tab, then copy the ```Public IPv4 address```.<br />
@@ -19,8 +19,6 @@ Before accessing ```frontend-instance-1```, we need to copy the following from y
 chmod 400 MERN.pem
 
 scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519 ec2-user@18.210.12.57:~/.ssh/
-
-scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519.pub ec2-user@18.210.12.57:~/.ssh/
 
 scp -i $HOME/MERN.pem $HOME/MERN.pem ec2-user@18.210.12.57:~/
 ```
@@ -42,15 +40,13 @@ Go back to EC2 Management Console, then click ```Instances```. Select ```fronten
 Run the SSH command you copied from the ```Example:```.
 
 6. You are now inside the ```frontend-instance-1```.<br />
-	Before accessing the ```EC2 Mongodb```, copy the GitHub keys ```id_ed25519``` and ```id_ed25519.pub``` from ```frontend-instance-1``` to ```EC2 Mongodb```.
+	Before accessing the ```EC2 Mongodb```, copy the GitHub SSH key ```id_ed25519``` from ```frontend-instance-1``` to ```EC2 Mongodb```.
 > Identify first the ```Private IPv4 address``` of ```EC2 Mongodb```.<br />
 > To do this, go back to EC2 Management Console, then click ```Instances```. Select ```EC2 Mongodb```, and navigate to the ```Details``` tab, then copy the ```Private IPv4 address```.<br />
 > Switch back to ```WSL Terminal``` *(it should be still inside* ```frontend-instance-1```*)*.<br />
 > Run the following commands:
 ```
 scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519 ec2-user@10.0.2.57:~/.ssh/
-
-scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519.pub ec2-user@10.0.2.57:~/.ssh/
 ```
 > [!IMPORTANT]
 > Take note of the ```EC2 Mongodb Private IPv4 address``` will be the destination IP.
@@ -80,11 +76,11 @@ cd mern-gallery-sample-app/ec2-mongodb
 ```
 
 11. Prepare the environment variables. <br />
-  Check ```.env.sample``` for the example by running:
+  Rename ```.env.sample``` to ```.env``` by running:
 ```
-cat .env.sample
+mv .env.sample .env
 ```
-  Create a new ```.env``` file, run the command:
+  Edit ```.env``` file, run the command:
 ```
 vim .env
 ```
@@ -106,14 +102,12 @@ Switch to a new ```WSL Terminal``` *(it should be inside your* ```WSL machine```
 Do the same process to access ```frontend-instance-1``` from the ```WSL machine```.
 
 2. You are now inside the ```frontend-instance-1```.<br />
-Before accessing the ```backend-instance-1```, do the same process in copying the GitHub keys, but this time from ```frontend-instance-1``` to ```backend-instance-1```.
+Before accessing the ```backend-instance-1```, do the same process in copying the GitHub SSH key, but this time from ```frontend-instance-1``` to ```backend-instance-1```.
 > We will now use the ```Private IPv4 address``` of ```backend-instance-1```.<br />
 > Switch back to ```WSL Terminal``` *(it should be still inside* ```frontend-instance-1```*)*.<br />
 > Run the following commands:
 ```
 scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519 ec2-user@10.0.2.12:~/.ssh/
-
-scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519.pub ec2-user@10.0.2.12:~/.ssh/
 ```
 > [!IMPORTANT]
 > Take note of the ```backend-instance-1 Private IPv4 address``` will be the destination IP.
@@ -138,23 +132,22 @@ cd mern-gallery-sample-app/backend-instance
 7. Prepare the environment variables.<br />
 We will now use your ```AWS IAM User Access key```.<br />
 To copy your ```AWS credentials```, open the ```.csv``` file you downloaded when creating the access key.<br />
-Check ```.env.sample``` for the example by running the same command: ```cat .env.sample```.<br />
-Create a new ```.env``` file, run the same command: ```vim .env```.
+Rename ```.env.sample``` to ```.env``` by running the same command: ```mv .env.sample .env```<br />
+Edit ```.env``` file, run the same command: ```vim .env```
 
 8. Build and run the application, run these commands:
 ```
 docker buildx build -t mern-backend:latest .
-docker run -p 5000:5000 -d --restart always mern-backend:latest
+docker run --name backend -p 5000:5000 -d --restart always mern-backend:latest
 ```
 
-9. Verify if the docker container ```mern-backend``` is running, run the same command: ```docker ps```.
+9. Verify if the docker container ```backend``` is running, run the same command: ```docker ps```.
 
 10. To test if it’s properly working, run this:
 ```
-docker logs <CONTAINER_ID>
+docker logs backend
 ```
 > [!IMPORTANT]
-> Change the value of ```<CONTAINER_ID>``` from the output of the previous command.<br />
 > It should output: ```Connected to MongoDB```
 
 > [!TIP]
@@ -200,14 +193,12 @@ docker-compose up -d --build
 
 ## To configure Proxy server (NGINX instance)
 
-1. Before accessing the ```Proxy server```, do the same process in copying the GitHub keys, but this time from your local ```WSL machine``` to the remote ```Proxy server```.
+1. Before accessing the ```Proxy server```, do the same process in copying the GitHub SSH key, but this time from your local ```WSL machine``` to the remote ```Proxy server```.
 > We will now use the ```Public IPv4 address``` of ```Proxy server```.<br />
 > Switch to a new ```WSL Terminal``` *(it should be inside your* ```WSL machine```*)*.<br />
 > Run the following commands:
 ```
 scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519 ec2-user@18.210.22.35:~/.ssh/
-
-scp -i $HOME/MERN.pem $HOME/.ssh/id_ed25519.pub ec2-user@18.210.22.35:~/.ssh/
 ```
 > [!IMPORTANT]
 > Take note of the ```Proxy server Public IPv4 address``` will be the destination IP.
