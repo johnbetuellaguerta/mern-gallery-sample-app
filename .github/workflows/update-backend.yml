@@ -6,8 +6,10 @@ on:
             - 'backend-instance/**'
 
 jobs:
-    Backend-update:
+    Initialization:
         runs-on: ubuntu-latest
+        outputs:
+          output1: ${{steps.nat.outputs.nat_ip}}
         steps:
         - name: Checkout terraform repo
           uses: actions/checkout@v4
@@ -35,12 +37,43 @@ jobs:
             terraform output -raw nat_instance_ip
             echo "nat_ip=$(terraform output -raw nat_instance_ip)" >> "$GITHUB_OUTPUT"
         
+        # - name: Connect to NAT instance / backend-instance-1
+        #   env:
+        #       PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
+        #       HOSTNAME: ${{secrets.BACKEND_1_IP}}
+        #       NAT_IP: ${{ steps.nat.outputs.nat_ip }}
+        #   run: |
+        #     echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
+        #     scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/private_key ec2-user@$NAT_IP:~/
+        #     ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
+        #     ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
+        #     if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
+        #         git clone git@github.com:jbetueldev/mern-gallery-sample-app.git
+        #     else
+        #         cd /home/ec2-user/mern-gallery-sample-app/backend-instance
+        #         docker stop backend
+        #         docker rm backend
+        #         docker rmi mern-backend:latest
+        #         cd ..
+        #         git pull origin main
+        #     fi
+        #     cd /home/ec2-user/mern-gallery-sample-app/backend-instance
+        #     docker buildx build -t mern-backend:latest .
+        #     docker run --name backend -p 5000:5000 -d --restart always mern-backend:latest
+        #     docker logs backend
+        #     '"
+
+    Connect-to-backend-instance-1:
+        runs-on: ubuntu-latest
+        needs: Initialization
+        steps:
         - name: Connect to NAT instance / backend-instance-1
           env:
               PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
               HOSTNAME: ${{secrets.BACKEND_1_IP}}
-              NAT_IP: ${{ steps.nat.outputs.nat_ip }}
+              NAT_IP: ${{needs.Initialization.outputs.output1}}
           run: |
+            pwd
             echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
             scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/private_key ec2-user@$NAT_IP:~/
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
@@ -60,7 +93,18 @@ jobs:
             docker run --name backend -p 5000:5000 -d --restart always mern-backend:latest
             docker logs backend
             '"
-            
+
+
+
+
+
+
+
+
+
+
+
+
     #     - name: Spin up NAT instance / Connect to backend-instance-1
     #       env:
     #           PRIVATE_KEY: ${{secrets.AWS_KEY_PAIR}}
