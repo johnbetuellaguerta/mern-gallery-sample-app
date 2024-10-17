@@ -11,7 +11,16 @@ env:
     AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
     DEPLOY_SSH_KEY: ${{secrets.AWS_KEY_PAIR}}
     DEPLOY_SCRIPT: |
-        echo "This is a test file." > test.txt
+        if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
+            git clone git@github.com:jbetueldev/mern-gallery-sample-app.git
+        else
+            cd /home/ec2-user/mern-gallery-sample-app/frontend-instance
+            docker-compose down
+            cd ..
+            git pull origin main
+        fi
+        cd /home/ec2-user/mern-gallery-sample-app/frontend-instance
+        docker-compose up -d --build
             
 jobs:
     Update_frontend_instance_1:
