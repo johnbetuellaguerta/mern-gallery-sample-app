@@ -5,17 +5,17 @@ on:
         paths:
             - 'frontend-instance/**'
 
+env:
+    AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+    AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+    AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
+    DEPLOY_SSH_KEY: ${{secrets.AWS_KEY_PAIR}}
+    DEPLOY_SCRIPT: |
+        echo "This is a test file." > test.txt
+            
 jobs:
-    Initialization:
+    Update_frontend_instance_1:
         runs-on: ubuntu-latest
-        env:
-            AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-            AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-            AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
-            DEPLOY_SSH_KEY: ${{secrets.AWS_KEY_PAIR}}
-            DEPLOY_SCRIPT: |
-                echo "This is a test file inside frontend-instance-1" > test.txt
-
         steps:
         - name: Get frontend-instance-1 IP address
           id: ip_address
@@ -26,6 +26,24 @@ jobs:
             echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
 
         - name: Connect to frontend-instance-1
+          env:
+              INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
+          run: |
+            echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
+            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} "${DEPLOY_SCRIPT}"
+    
+    Update_frontend_instance_2:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Get frontend-instance-2 IP address
+          id: ip_address
+          run: |
+            sudo apt-get install jq
+            export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=frontend-instance-2" | jq ".Reservations[].Instances[].PublicIpAddress" | tr -d '"')
+            echo "INSTANCE_IP=$INSTANCE_IP"
+            echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
+
+        - name: Connect to frontend-instance-2
           env:
               INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
           run: |
