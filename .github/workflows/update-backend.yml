@@ -41,8 +41,8 @@ jobs:
               HOSTNAME: ${{secrets.BACKEND_1_IP}}
               NAT_IP: ${{ steps.nat.outputs.nat_ip }}
           run: |
-            pwd
-            scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/mern-app/private_key ec2-user@$NAT_IP:~/
+            echo "$PRIVATE_KEY" > private_key && chmod 400 private_key
+            scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/private_key ec2-user@$NAT_IP:~/
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
             ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${HOSTNAME} -t '
             if [ ! -d "/home/ec2-user/mern-gallery-sample-app" ]; then
