@@ -38,9 +38,9 @@ app.get('/api/todos', async (req, res) => {
 });
 
 // TEST
-app.get('/bossjek', async (req, res) => {
+app.get('/testing', async (req, res) => {
   try {
-    res.json('bossjek');
+    res.json('testing');
   } catch (error) {
     res.status(500).json({ message: 'Error test', error });
   }
