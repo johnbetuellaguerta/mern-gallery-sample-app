@@ -37,7 +37,7 @@ app.get('/api/todos', async (req, res) => {
   }
 });
 
-// TEST API ENDPOINT
+// TEST API ENDPOINT - for TF
 app.get('/test', async (req, res) => {
   try {
     res.json('test');
