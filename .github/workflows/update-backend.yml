@@ -4,6 +4,7 @@ on:
     push:
         paths:
             - 'backend-instance/**'
+    workflow_dispatch:
 
 env:
     AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
@@ -31,10 +32,8 @@ jobs:
         outputs:
           output1: ${{steps.nat.outputs.nat_ip}}
         steps:
-        - name: Checkout terraform repo
+        - name: Checkout MERN app repo
           uses: actions/checkout@v4
-          with:
-            repository: jbetueldev/terraforms
 
         - name: Set up Terraform
           uses: hashicorp/setup-terraform@v3
@@ -49,7 +48,7 @@ jobs:
         - name: Spin up NAT-instance
           id: nat
           run: | 
-            cd mern-app
+            cd terraform
             ls
             terraform init
             terraform destroy -target=aws_instance.nat_instance -auto-approve
@@ -65,71 +64,71 @@ jobs:
             echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
             scp -o StrictHostKeyChecking=no -i private_key /home/runner/work/mern-gallery-sample-app/mern-gallery-sample-app/private_key ec2-user@$NAT_IP:~/
 
-    Update_backend_instance-1:
-        runs-on: ubuntu-latest
-        needs: Initialization
-        steps:
-        - name: Get backend-instance-1 Private IP address
-          id: ip_address
-          run: |
-            sudo apt-get install jq
-            export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-1" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
-            echo "INSTANCE_IP=$INSTANCE_IP"
-            echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
+    # Update_backend_instance-1:
+    #     runs-on: ubuntu-latest
+    #     needs: Initialization
+    #     steps:
+    #     - name: Get backend-instance-1 Private IP address
+    #       id: ip_address
+    #       run: |
+    #         sudo apt-get install jq
+    #         export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-1" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
+    #         echo "INSTANCE_IP=$INSTANCE_IP"
+    #         echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
 
-        - name: Connect to NAT-instance > backend-instance-1
-          env:
-              NAT_IP: ${{needs.Initialization.outputs.output1}}
-              INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
-          run: |
-            echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
-            ${DEPLOY_SCRIPT}
-            '"
+    #     - name: Connect to NAT-instance > backend-instance-1
+    #       env:
+    #           NAT_IP: ${{needs.Initialization.outputs.output1}}
+    #           INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
+    #       run: |
+    #         echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
+    #         ${DEPLOY_SCRIPT}
+    #         '"
 
-    Update_backend_instance-2:
-        runs-on: ubuntu-latest
-        needs: Initialization
-        steps:
-        - name: Get backend-instance-2 Private IP address
-          id: ip_address
-          run: |
-            sudo apt-get install jq
-            export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-2" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
-            echo "INSTANCE_IP=$INSTANCE_IP"
-            echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
+    # Update_backend_instance-2:
+    #     runs-on: ubuntu-latest
+    #     needs: Initialization
+    #     steps:
+    #     - name: Get backend-instance-2 Private IP address
+    #       id: ip_address
+    #       run: |
+    #         sudo apt-get install jq
+    #         export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-2" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
+    #         echo "INSTANCE_IP=$INSTANCE_IP"
+    #         echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
 
-        - name: Connect to NAT-instance > backend-instance-2
-          env:
-              NAT_IP: ${{needs.Initialization.outputs.output1}}
-              INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
-          run: |
-            echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
-            ${DEPLOY_SCRIPT}
-            '"
+    #     - name: Connect to NAT-instance > backend-instance-2
+    #       env:
+    #           NAT_IP: ${{needs.Initialization.outputs.output1}}
+    #           INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
+    #       run: |
+    #         echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
+    #         ${DEPLOY_SCRIPT}
+    #         '"
 
-    Update_backend_instance-3:
-        runs-on: ubuntu-latest
-        needs: Initialization
-        steps:
-        - name: Get backend-instance-3 Private IP address
-          id: ip_address
-          run: |
-            sudo apt-get install jq
-            export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-3" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
-            echo "INSTANCE_IP=$INSTANCE_IP"
-            echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
+    # Update_backend_instance-3:
+    #     runs-on: ubuntu-latest
+    #     needs: Initialization
+    #     steps:
+    #     - name: Get backend-instance-3 Private IP address
+    #       id: ip_address
+    #       run: |
+    #         sudo apt-get install jq
+    #         export INSTANCE_IP=$(aws ec2 describe-instances --output json --filters "Name=tag:Name,Values=backend-instance-3" | jq ".Reservations[].Instances[].PrivateIpAddress" | tr -d '"')
+    #         echo "INSTANCE_IP=$INSTANCE_IP"
+    #         echo "INSTANCE_IP=$INSTANCE_IP" >> "$GITHUB_OUTPUT"
 
-        - name: Connect to NAT instance > backend-instance-3
-          env:
-              NAT_IP: ${{needs.Initialization.outputs.output1}}
-              INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
-          run: |
-            echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
-            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
-            ${DEPLOY_SCRIPT}
-            '"
+    #     - name: Connect to NAT instance > backend-instance-3
+    #       env:
+    #           NAT_IP: ${{needs.Initialization.outputs.output1}}
+    #           INSTANCE_IP: ${{steps.ip_address.outputs.INSTANCE_IP}}
+    #       run: |
+    #         echo "$DEPLOY_SSH_KEY" > private_key && chmod 400 private_key
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@$NAT_IP -t "
+    #         ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=4 -i private_key ec2-user@${INSTANCE_IP} -t '
+    #         ${DEPLOY_SCRIPT}
+    #         '"
