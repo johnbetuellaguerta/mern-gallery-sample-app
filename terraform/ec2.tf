@@ -9,12 +9,10 @@ resource "aws_instance" "ec2_mongodb" {
                                 #!/bin/bash
                                 yum update -y
                                 yum install git -y
-                                git config --global user.name "jbetueldev"
-                                git config --global user.email "johnbetuel.dev@gmail.com"
                                 yum install docker -y
-                                sudo systemctl start docker
-                                sudo systemctl enable docker
-                                sudo usermod -a -G docker ec2-user
+                                systemctl start docker
+                                systemctl enable docker
+                                usermod -a -G docker ec2-user
                                 curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
                                 chmod +x /usr/local/bin/docker-compose
                               EOF
@@ -35,12 +33,10 @@ resource "aws_instance" "backend_instance" {
                                 #!/bin/bash
                                 yum update -y
                                 yum install git -y
-                                git config --global user.name "jbetueldev"
-                                git config --global user.email "johnbetuel.dev@gmail.com"
                                 yum install docker -y
-                                sudo systemctl start docker
-                                sudo systemctl enable docker
-                                sudo usermod -a -G docker ec2-user
+                                systemctl start docker
+                                systemctl enable docker
+                                usermod -a -G docker ec2-user
                               EOF
   tags = {
     Name = "backend-instance-${count.index + 1}"
@@ -59,12 +55,10 @@ resource "aws_instance" "frontend_instance" {
                                 #!/bin/bash
                                 yum update -y
                                 yum install git -y
-                                git config --global user.name "jbetueldev"
-                                git config --global user.email "johnbetuel.dev@gmail.com"
                                 yum install docker -y
-                                sudo systemctl start docker
-                                sudo systemctl enable docker
-                                sudo usermod -a -G docker ec2-user
+                                systemctl start docker
+                                systemctl enable docker
+                                usermod -a -G docker ec2-user
                                 curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
                                 chmod +x /usr/local/bin/docker-compose
                               EOF
@@ -84,11 +78,9 @@ resource "aws_instance" "proxy_server" {
                                 #!/bin/bash
                                 yum update -y
                                 yum install git -y
-                                git config --global user.name "jbetueldev"
-                                git config --global user.email "johnbetuel.dev@gmail.com"
                                 yum install nginx -y
-                                sudo systemctl start nginx
-                                sudo systemctl enable nginx
+                                systemctl start nginx
+                                systemctl enable nginx
                               EOF
   tags = {
     Name = "Proxy server"

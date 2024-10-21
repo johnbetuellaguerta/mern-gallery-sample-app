@@ -17,27 +17,6 @@ resource "aws_instance" "nat_instance" {
                                 sudo /sbin/iptables -F FORWARD
                                 sudo service iptables save
                               EOF
-  # connection {
-  #   type        = "ssh"
-  #   user        = "ec2-user"
-  #   private_key = file("${var.key_name}.pem")
-  #   host        = self.public_ip
-  # }
-  # provisioner "file" {
-  #   source      = "./id_rsa"
-  #   destination = "/home/ec2-user/.ssh/id_rsa"
-  # }
-  # provisioner "file" {
-  #   source      = "./MERN.pem"
-  #   destination = "/home/ec2-user/MERN.pem"
-  # }
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "chmod 400 /home/ec2-user/.ssh/id_rsa",
-  #     "chmod 400 /home/ec2-user/MERN.pem",
-  #   ]
-  # }
-
   tags = {
     Name = "NAT-instance"
   }
