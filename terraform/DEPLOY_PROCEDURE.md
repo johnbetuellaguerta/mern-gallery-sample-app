@@ -331,9 +331,32 @@ sudo systemctl restart nginx
 sudo systemctl status nginx
 ```
 
----
+<br>
 <br>
 
-### Our application is now deployed in AWS, and ready for testing.<br />
-- [Accessing the App from Browser](README.md#accessing-the-app-from-browser)
-- [Accessing Mongo-Express from Browser](README.md#accessing-mongo-express-from-browser)
+## Accessing the App from Browser
+
+1. You can access the MERN app thru the ```Public IPv4 address``` of the ```Proxy server```.<br />
+Go back to EC2 Management Console, then click ```Instances```.<br />
+Select ```Proxy server```, and navigate to the ```Details``` tab, then copy the ```Public IPv4 address```.
+
+2. Access this IP address into your browser, and the MERN Image Gallery Todo Sample app will show.
+
+3. To test the ```To do List``` section, fill up the ```Add new todo Item```, then click ```Add task```.<br />
+	Reload the page, then the ```todo item``` should be displayed on ```To do List```.
+
+4. If you click ```Delete```, then reload the page, the ```todo item``` should be removed.
+
+5. To test the ```Images``` section, click ```Choose file```, then select a local image, and click ```Upload```.<br />
+	Reload the page, then the image should be displayed on ```Images```.
+
+## Accessing Mongo-Express from Browser
+
+We can access Mongo-Express thru the ```Public IPv4 address``` of the ```Proxy server``` at ```Port 8081```.
+```
+<PROXY_SERVER_PUBLIC_IP>:8081
+```
+> [!IMPORTANT]
+> You will be asked for the username and password. Use the default values:<br />
+> Username: ```admin```<br/>
+> Password: ```pass```
