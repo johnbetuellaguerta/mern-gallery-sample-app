@@ -1,0 +1,15 @@
+name: Update in frontendddddddddddddd
+
+on:
+    push:
+        paths:
+            - 'frontend-instance/**'
+    workflow_dispatch:
+
+jobs:
+    Update_frontend_instance_1111111111111:
+        runs-on: ubuntu-latest
+        steps:
+        - name: test
+          id: ip_address
+          run: echo tests
